@@ -1,6 +1,28 @@
 <%@ language="javascript"%>
 <%
 
+// makeClass - By John Resig (MIT Licensed)
+function makeClass(){
+  return function(args){
+    if ( this instanceof arguments.callee ) { 
+      if ( typeof this.init == "function" )
+        this.init.apply( this, args.callee ? args : arguments );
+    } else
+      return new arguments.callee( arguments );
+  };  
+}
+
+var Dog = makeClass();
+Dog.prototype = {
+  init: function(name){
+    this.name = name;
+  },
+
+  bark: function(){
+    return "Woof!  My name is " + this.name;
+  }
+};
+
 // something kindof like Rack for classic ASP
 var Rack = {
 
@@ -16,6 +38,10 @@ var Rack = {
     env['PATH_INFO'] = path;
 
     return env;
+  },
+
+  use: function(middleware){
+    // nothing yet
   },
 
   run: function(app){
@@ -40,5 +66,6 @@ var Rack = {
 };
 
 var run = Rack.run;
+var use = Rack.use;
 
 %>

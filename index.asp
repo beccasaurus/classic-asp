@@ -10,6 +10,11 @@ get('/env', function(){
   return "The env: " + this.env['REQUEST_METHOD'];
 });
 
+get('/dog', function(){
+  var dog = new Dog("Rover");
+  return dog.bark();
+});
+
 run(sinatra_app);
 
 %>
