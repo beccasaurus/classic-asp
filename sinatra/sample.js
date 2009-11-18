@@ -1,4 +1,4 @@
-req(uire('sinatra'));
+req(uire('sinatra/sinatra'));
 
 get('/home', function(){
   return "Home page";
@@ -29,5 +29,3 @@ get('/view', function(){
 get('/view-with-vars', function(){
   return "pending";
 });
-
-run(sinatra_app);

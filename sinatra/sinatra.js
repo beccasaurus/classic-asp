@@ -1,7 +1,7 @@
-req(uire('rack'));
-req(uire('io'));
-req(uire('json2'));
-req(uire('haml'));
+req(uire('rack/rack'));
+req(uire('util/io'));
+req(uire('util/json2'));
+req(uire('sinatra/haml'));
 
 var paths = {};
 
