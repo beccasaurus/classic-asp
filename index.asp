@@ -1,4 +1,3 @@
-<!--#include file ="rack.asp"-->
 <!--#include file ="sinatra.asp"-->
 <%
 
@@ -13,6 +12,10 @@ get('/env', function(){
 get('/dog', function(){
   var dog = new Dog("Rover");
   return dog.bark();
+});
+
+get('/haml', function(){
+  return this.haml("%h1 Hello There\n%ul.foo\n  %li hello\n  %li there");
 });
 
 run(sinatra_app);

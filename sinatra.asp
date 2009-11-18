@@ -1,3 +1,6 @@
+<!--#include file ="rack.asp"-->
+<!--#include file ="json2.js"-->
+<!--#include file ="haml.js"-->
 <%
 
 var paths = {};
@@ -19,10 +22,14 @@ function sinatra_app(env){
     var block = paths[path][method];
     if (block != null){
       
-      var vars = {
-        env: env
+      var environment = {
+        env:  env,
+        haml: function(str){
+          return Haml.to_html(Haml.parse(str));
+        }
       };
-      var body = block.apply(vars); // bind to 'this'
+
+      var body = block.apply(environment); // bind to 'this'
 
       return [ 200, {}, [body] ]
     }
