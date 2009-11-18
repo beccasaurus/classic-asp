@@ -1,7 +1,7 @@
 $.require('makeClass');
 
-$.Dog = $.makeClass();
-$.Dog.prototype = {
+Dog = $.makeClass();
+Dog.prototype = {
 
   init: function(name){
     this.name = name;
