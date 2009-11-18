@@ -1,4 +1,3 @@
-<%
 /* ex:ts=2:et: */
 /*jslint bitwise: true, browser: true, eqeqeq: true, evil: true, immed: true, newcap: true, 
     nomen: true, plusplus: true, regexp: true, undef: true, white: true, indent: 2 */
@@ -404,4 +403,3 @@ if (exports) {
   }
 }
 */
-%>

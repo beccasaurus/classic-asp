@@ -21,6 +21,10 @@ function js(filename){
   }
 };
 
-eval( js('app') );
+// alias eval() and js() functions so we can get as close to calling require() as possible
+var req  = eval;
+var uire = js;
+
+req(uire('app'));
 
 %>
