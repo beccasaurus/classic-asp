@@ -1,36 +1,29 @@
-<!--#include file ="sinatra.asp"-->
+<%@ language="javascript"%>
 <%
 
-get('/home', function(){
-  return "Home page";
-});
+/*
+ this is the core ASP file you should redirect your IIS 404 error page to.
 
-get('/env', function(){
-  var body = "";
-  for (var key in this.env)
-    body = body + key + " = "  + this.env[key] + "<br />";
-  return body;
-});
+ this automatically requires a few useful functions and it currently assumes 
+ there there is a relative rackup.js file, which is what it loads.
+*/
 
-// APPL_PHYSICAL_PATH
+if (this.ASP == null) var ASP = {};
+if (this.$   == null) var $ = ASP;
 
-get('/dog', function(){
-  var dog = new Dog("Rover");
-  return dog.bark();
-});
+ASP.require = function(filename){
+  var fso  = Server.CreateObject("Scripting.FileSystemObject");
+  var path = Server.MapPath(filename) + '.js';
+  if (fso.FileExists(path)){
+    var file       = fso.OpenTextFile(path, 1); 
+    var javascript = file.ReadAll();
+    file.Close();
+    eval(javascript);
+  } else {
+    Response.Write("File not found: " + filename);
+  }
+}
 
-get('/haml', function(){
-  return this.render_haml("%h1 Hello There\n%ul.foo\n  %li hello\n  %li there");
-});
-
-get('/view', function(){
-  return this.haml('view');
-});
-
-get('/view-with-vars', function(){
-  return "pending";
-});
-
-run(sinatra_app);
+ASP.require('app');
 
 %>
