@@ -8,11 +8,7 @@
  there there is a relative rackup.js file, which is what it loads.
 */
 
-if (this.ASP == null) var ASP = {};
-if (this.$   == null) var $ = ASP;
-
-// returns the string that we want to eval
-ASP.include = function(filename){
+function js(filename){
   var fso  = Server.CreateObject("Scripting.FileSystemObject");
   var path = Server.MapPath(filename) + '.js';
   if (fso.FileExists(path)){
@@ -25,13 +21,6 @@ ASP.include = function(filename){
   }
 };
 
-// gets and eval's the string that we want to eval.
-// you wan't be able to access anything from this file 
-// in your local scope!
-ASP.require = function(filename){
-  eval(ASP.include(filename));
-}
-
-ASP.require('app');
+eval( js('app') );
 
 %>

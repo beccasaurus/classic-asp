@@ -1,5 +1,5 @@
 // makeClass - By John Resig (MIT Licensed)
-$.makeClass = function(){
+function makeClass(){
   return function(args){
     if ( this instanceof arguments.callee ) { 
       if ( typeof this.init == "function" )

@@ -1,6 +1,6 @@
-$.require('makeClass');
+eval(js('makeClass'));
 
-Dog = $.makeClass();
+Dog = makeClass();
 Dog.prototype = {
 
   init: function(name){
