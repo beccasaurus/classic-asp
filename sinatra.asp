@@ -1,4 +1,5 @@
 <!--#include file ="rack.asp"-->
+<!--#include file ="io.js"-->
 <!--#include file ="json2.js"-->
 <!--#include file ="haml.js"-->
 <%
@@ -23,9 +24,13 @@ function sinatra_app(env){
     if (block != null){
       
       var environment = {
-        env:  env,
-        haml: function(str){
+        env: env,
+        render_haml: function(str){
           return Haml.to_html(Haml.parse(str));
+        },
+        haml: function(filename){
+          if (File.exists(filename))
+            return File.read(filename);
         }
       };
 

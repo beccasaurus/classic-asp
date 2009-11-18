@@ -1,16 +1,22 @@
 <%@ language="javascript"%>
+<!--#include file ="class.js"-->
 <%
 
-// makeClass - By John Resig (MIT Licensed)
-function makeClass(){
-  return function(args){
-    if ( this instanceof arguments.callee ) { 
-      if ( typeof this.init == "function" )
-        this.init.apply( this, args.callee ? args : arguments );
-    } else
-      return new arguments.callee( arguments );
-  };  
-}
+// require('class');
+
+// TESTING ...
+var fso  = Server.CreateObject("Scripting.FileSystemObject");
+var file = fso.GetFile(Server.MapPath("testing.js"));
+// oFS.FileExists(sFilePathAndName)
+/*
+Set oFSFile = oFS.OpenTextFile(sFilePathAndName,ForWriting,True) 
+oFSFile.Write(sFileContents) 
+oFSFile.Close 
+
+Set oTextStream = oFS.OpenTextFile(sFilePathAndName,1) 
+sFileContents = oTextStream.ReadAll 
+oTextStream.Close 
+ */
 
 var Dog = makeClass();
 Dog.prototype = {
