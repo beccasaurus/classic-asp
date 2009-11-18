@@ -1,13 +1,17 @@
-<!--#include file ="sinatra.asp"-->
-<%
+req(uire('sinatra'));
 
 get('/home', function(){
   return "Home page";
 });
 
 get('/env', function(){
-  return "The env: " + this.env['REQUEST_METHOD'];
+  var body = "";
+  for (var key in this.env)
+    body = body + key + " = "  + this.env[key] + "<br />";
+  return body;
 });
+
+// APPL_PHYSICAL_PATH
 
 get('/dog', function(){
   var dog = new Dog("Rover");
@@ -27,5 +31,3 @@ get('/view-with-vars', function(){
 });
 
 run(sinatra_app);
-
-%>
