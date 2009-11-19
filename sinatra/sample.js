@@ -11,8 +11,6 @@ get('/env', function(){
   return body;
 });
 
-// APPL_PHYSICAL_PATH
-
 get('/dog', function(){
   var dog = new Dog("Rover");
   return dog.bark();

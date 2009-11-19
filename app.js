@@ -9,9 +9,77 @@
 //run(rack_app);
 
 /* DATABASE TESTING */
+
 req(uire('sinatra/sinatra'));
+req(uire('util/makeClass'));
+
+function dbClass(table){
+  var klass = makeClass();
+  
+  // instance functions
+  klass.prototype = {
+    init: function(){
+    
+    }
+  };
+
+  // class functions
+  klass.all = function(){};
+
+  // get column information (we do this once!)
+  // ...
+
+  return klass;
+}
+
+var Dog = dbClass("dogs");
+
+get('/schema', function(){
+  var db = Server.CreateObject("ADODB.Connection");
+  db.Open("dogs"); // System DNS
+
+  // get tables
+  var rs = db.OpenSchema(20);
+  rs.MoveFirst()
+  while (rs.EOF != true){
+    for (var i = 0; i < rs.Fields.Count; i++){
+      var field = rs.Fields(i);
+      Response.Write(field.name + ": " + field.value + "<br />");
+    }
+    Response.Write("<br />");
+    rs.MoveNext();
+  }
+
+  Response.Write("<hr />");
+
+  // get all tables' columns
+  var rs = db.OpenSchema(4);
+  rs.MoveFirst()
+  while (rs.EOF != true){
+    for (var i = 0; i < rs.Fields.Count; i++){
+      var field = rs.Fields(i);
+      Response.Write(field.name + ": " + field.value + "<br />");
+    }
+    rs.MoveNext();
+    Response.Write("<br />");
+  }
+
+  return "schema!";
+});
 
 get('/', function(){
+  var dogs = Dog.all();
+  dogs = [ new Dog(), new Dog() ];
+
+  for (var i in dogs){
+    var dog = dogs[i];
+    Response.Write("dog with id " + dog.id + " has name " + dog.name + "<br />");
+  }
+
+  return "hi";
+});
+
+get('/crappy', function(){
   var db = Server.CreateObject("ADODB.Connection");
   db.Open("dogs"); // the ODBC DSN
 
