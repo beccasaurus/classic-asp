@@ -12,6 +12,7 @@
 
 req(uire('sinatra/sinatra'));
 req(uire('util/makeClass'));
+req(uire('util/db'));
 
 function dbClass(table){
   var klass = makeClass();
@@ -33,6 +34,22 @@ function dbClass(table){
 }
 
 var Dog = dbClass("dogs");
+
+get('/db', function(){
+  var db = DB.odbc("dogs");
+
+  var tables = db.tables();
+  for (var name in tables){
+    Response.Write("table: " + name);
+    Response.Write("<ul>");
+    for (var key in tables[name]){
+      Response.Write("<li>" + key + " = " + tables[name][key] + "</li>");
+    }
+    Response.Write("</ul>");
+  }
+
+  return "db!";
+});
 
 get('/schema', function(){
   var db = Server.CreateObject("ADODB.Connection");
