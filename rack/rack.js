@@ -8,9 +8,13 @@ var Rack = {
     for (var i = 1; i < (native.Count + 1); i++)
       env[native.Key(i)] = native.Item(i);
 
-    var query = Request.QueryString().Key(1);
-    var path  = query.replace(/^404;https?:\/\/[^\/]+/, '');
-    env['PATH_INFO'] = path;
+    if (Request.QueryString().Count > 0) {
+      var query = Request.QueryString().Key(1);
+      var path  = query.replace(/^404;https?:\/\/[^\/]+/, '');
+      env['PATH_INFO'] = path;
+    } else {
+      env['PATH_INFO'] = '/';
+    }
 
     return env;
   },

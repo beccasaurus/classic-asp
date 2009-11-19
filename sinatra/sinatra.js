@@ -24,11 +24,12 @@ function sinatra_app(env){
       
       var environment = {
         env: env,
-        render_haml: function(str){
-          return Haml.to_html(Haml.parse(str));
+        render_haml: function(text, scope){
+          return Haml.to_html(Haml.parse.call(scope, text));
         },
-        haml: function(filename){
-          return this.render_haml( File.read(filename + '.haml') );
+        haml: function(filename, scope){
+          var text = File.read(filename + '.haml');
+          return this.render_haml(text, scope);
         }
       };
 
