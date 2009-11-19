@@ -12,7 +12,36 @@
 req(uire('sinatra/sinatra'));
 
 get('/', function(){
-  return "Hello World!"
+  var db = Server.CreateObject("ADODB.Connection");
+  db.Open("dogs"); // the ODBC DSN
+
+  var dog = Server.CreateObject("ADODB.Command");
+  dog.ActiveConnection = db;
+  dog.CommandText      = "SELECT * FROM dogs";
+
+  var records = dog.Execute();
+
+  Response.Write("<ul>");
+  records.MoveFirst()
+  while (records.EOF != true){
+
+    Response.Write("<li>");
+    for (var i = 0; i < records.Fields.Count; i++){
+      var field = records.Fields(i);
+      Response.Write(field.name + ": " + field.value + " ");
+    }
+    Response.Write("</li>");
+
+    records.MoveNext();
+  }
+  Response.Write("</ul>");
+
+  records.Close();
+  records = null;
+  dog     = null;
+  db      = null;
+
+  return "hello";
 });
 
 get('/haml-with-vars', function(){

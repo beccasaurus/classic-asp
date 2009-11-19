@@ -275,7 +275,6 @@ Haml.parse = function (text) {
   
   function process_plugins() {
     var contents, i;
-    Response.Write("element: " + JSON.stringify(element) + "<br />");
     switch (element[0].plugin) {
     case 'if':
       var condition = element[0].condition;
@@ -296,7 +295,6 @@ Haml.parse = function (text) {
       }
       break;
     case 'foreach':
-      Response.Write("foreach!");
       var array, key, value, key_name, value_name;
       array = element[0].array;
       key_name = element[0].key;
@@ -308,7 +306,6 @@ Haml.parse = function (text) {
         }
       }
       element.length = 0;
-      Response.Write("array: " + JSON.stringify(array));
       for (key in array) {
         if (array.hasOwnProperty(key)) {
           value = array[key];
