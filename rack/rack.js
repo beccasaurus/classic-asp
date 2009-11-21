@@ -10,7 +10,9 @@ var Rack = {
 
     if (Request.QueryString().Count > 0) {
       var query = Request.QueryString().Key(1);
-      var path  = query.replace(/^404;https?:\/\/[^\/]+/, '');
+      // we have to take a query string and turn it into the path.
+      // also, sometimes it seems to have a stray ? on the end of it.
+      var path  = query.replace(/^404;https?:\/\/[^\/]+/, '').replace(/\?$/, '');
       env['PATH_INFO'] = path;
     } else {
       env['PATH_INFO'] = '/';

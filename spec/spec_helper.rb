@@ -1,7 +1,11 @@
 %w( rubygems spec httparty fileutils ).each {|lib| require lib }
 
+def asp_server_ip
+  ENV['IP'] || '10.5.5.107'
+end
+
 def asp_server
-  'http://10.5.5.107/'
+  ENV['HOST'] || "http://#{ asp_server_ip }/"
 end
 
 def get uri
