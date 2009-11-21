@@ -38,11 +38,20 @@ var Dog = dbClass("dogs");
 get('/db', function(){
   var db = DB.odbc("dogs");
 
+  write('tables: ' + map(db.tables(), function(t){ return t.name; }).join(', '));
+
   each(db.tables(), function(i, table){
     write("<ul>");
     each(table, function(key, value){
       write(n("<li>{k}: {v}</li>", { k: key, v: value }));
     });
+    write("</ul>");
+  });
+
+  write("[dogs] columns");
+  each(db.columns("dogs"), function(i, column){
+    write("<ul>");
+    write(n("<li>name: {name}</li>", column));
     write("</ul>");
   });
 

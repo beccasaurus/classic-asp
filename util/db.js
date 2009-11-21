@@ -22,12 +22,18 @@ var DB = {
 };
 
 DB.Column = makeClass();
-DB.Column.prototype = {};
+DB.Column.prototype = {
+  init: function(options){
+    for (var key in options)
+      this[key.toLowerCase().replace(/^column_/, '')] = options[key];
+  }
+};
 
 DB.Table = makeClass();
 DB.Table.prototype = {
   init: function(options){
-    for (var key in options) this[key] = options[key];
+    for (var key in options)
+      this[key.toLowerCase().replace(/^table_/, '')] = options[key];
   }
 };
 
@@ -39,14 +45,22 @@ DB.Connection.prototype = {
     this.dsn = dsn;
   },
 
-  // returns tables ... just as hashes of info for now
   tables: function(){
     if (this._tables == null){
-      var rs       = this._conn().OpenSchema(20);
+      var rs       = this._conn().OpenSchema(20); // all tables
       var rows     = DB.getRows(rs);
       this._tables = map(rows, function(row){ return new DB.Table(row); });
     }
     return this._tables;
+  },
+
+  columns: function(table_name){
+    var rs      = this._conn().OpenSchema(4); // all columns
+    var rows    = DB.getRows(rs);
+    var columns = map(rows, function(row){ return new DB.Column(row); });
+    if (table_name != undefined)
+      columns = select(columns, function(column){ return column.table_name == table_name; });
+    return columns;
   },
 
   _conn: function(){

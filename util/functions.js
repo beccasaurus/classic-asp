@@ -16,6 +16,14 @@ function map( collection, block ){
   return to_return;
 }
 
+function select( collection, block ){
+  var to_return = [];
+  each(collection, function(key, value){
+    if (block(value) == true) to_return[to_return.length] = value;
+  });
+  return to_return;
+}
+
 function write(text){ Response.Write(text); }
 
 // taken from jQuery nano plugin
