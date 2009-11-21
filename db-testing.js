@@ -53,6 +53,9 @@ get('/db', function(){
   each(db.columns("dogs"), function(i, column){
     write("<ul>");
     write(n("<li>name: {name}</li>", column));
+    each(column, function(key, value){
+      write(n("<li>{k}: {v}</li>", { k: key, v: value }));
+    });
     write("</ul>");
   });
 
