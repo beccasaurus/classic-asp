@@ -21,8 +21,18 @@ get('/dog', function(){
   return 'First Dog: ' + JSON.stringify(Dog.first());
 });
 
+// need to add splats and/or regex for the follow types of dynamic paths ...
+
+get('/dogs/rover', function(){
+  var dog = Dog.first({ name: 'Rover' });
+  return JSON.stringify(dog);
+});
+get('/dogs/snoopy', function(){
+  var dog = Dog.first({ name: 'Snoopy' });
+  return JSON.stringify(dog);
+});
+
 get('/dogs', function(){
-  // return 'Dogs: ' + JSON.stringify(Dog.all());
   return 'Dogs: ' + map(Dog.all(), function(dog){ return dog.name }).join(', ');
 });
 

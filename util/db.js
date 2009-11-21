@@ -101,13 +101,30 @@ DB.model = function(db, table_name){
     return DB.getRows(klass.db._conn().Execute(sql));
   };
 
-  klass.all = function(){
-    return map(klass.query("select * from " + klass.table_name), function(row){
+  klass.all = function(options){
+    var sql = "select * from " + klass.table_name;
+  
+    if (options != null){
+      each(options, function(key, value){
+        if (value != null && key != 'limit')
+          sql = sql + " WHERE " + key + " = " + JSON.stringify(value);
+      });
+      
+      if (options.limit != null) sql = sql + " LIMIT " + options.limit;
+    }
+
+    write('SQL: ' + sql + '<br />');
+
+    return map(klass.query(sql), function(row){
       return new klass(row);
     });
   };
 
-  klass.first = function(){};
+  klass.first = function(options){
+    if (options == null) options = {};
+    options.limit = 1;
+    return klass.all(options)[0];
+  };
 
   // get column information (we do this once!)
   // ...
