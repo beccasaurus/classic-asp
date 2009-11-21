@@ -14,26 +14,17 @@ req(uire('sinatra/sinatra'));
 req(uire('util/makeClass'));
 req(uire('util/db'));
 
-function dbClass(table){
-  var klass = makeClass();
-  
-  // instance functions
-  klass.prototype = {
-    init: function(){
-    
-    }
-  };
+var db  = DB.odbc("dogs");
+var Dog = db.model("dogs");
 
-  // class functions
-  klass.all = function(){};
+get('/dog', function(){
+  return 'First Dog: ' + JSON.stringify(Dog.first());
+});
 
-  // get column information (we do this once!)
-  // ...
-
-  return klass;
-}
-
-var Dog = dbClass("dogs");
+get('/dogs', function(){
+  // return 'Dogs: ' + JSON.stringify(Dog.all());
+  return 'Dogs: ' + map(Dog.all(), function(dog){ return dog.name }).join(', ');
+});
 
 get('/db', function(){
   var db = DB.odbc("dogs");

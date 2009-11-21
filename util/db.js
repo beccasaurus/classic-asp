@@ -63,6 +63,10 @@ DB.Connection.prototype = {
     return columns;
   },
 
+  model: function(table_name){
+    return DB.model(this, table_name);
+  },
+
   _conn: function(){
     if (this._connection == null && this.dsn != null){
       this._connection = Server.CreateObject("ADODB.Connection");
@@ -76,3 +80,37 @@ DB.Connection.prototype = {
 DB.odbc = function(dsn){
   return new DB.Connection(dsn);
 }
+
+// returns a new 'model' class
+DB.model = function(db, table_name){
+  var klass = makeClass();
+  
+  // variables
+  klass.db         = db;
+  klass.table_name = table_name;
+  
+  // instance functions
+  klass.prototype = {
+    init: function(options){
+      for (var key in options) this[key] = options[key];
+    }
+  };
+
+  // class functions
+  klass.query = function(sql){
+    return DB.getRows(klass.db._conn().Execute(sql));
+  };
+
+  klass.all = function(){
+    return map(klass.query("select * from " + klass.table_name), function(row){
+      return new klass(row);
+    });
+  };
+
+  klass.first = function(){};
+
+  // get column information (we do this once!)
+  // ...
+
+  return klass;
+};
