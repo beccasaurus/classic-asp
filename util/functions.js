@@ -17,3 +17,14 @@ function map( collection, block ){
 }
 
 function write(text){ Response.Write(text); }
+
+// taken from jQuery nano plugin
+function nano(text, variables){
+  return text.replace(/\{([\w\.]*)}/g, function(str, key){
+    var keys = key.split('.'), value = variables[keys.shift()];
+    each(keys, function(i, key){ value = value[key]; });
+    return value;
+  });
+}
+
+function n(text, variables){ return nano(text, variables); }

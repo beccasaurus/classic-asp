@@ -41,7 +41,7 @@ get('/db', function(){
   each(db.tables(), function(i, table){
     write("<ul>");
     each(table, function(key, value){
-      write("<li>" + key + ": " + value + "</li>");
+      write(n("<li>{k}: {v}</li>", { k: key, v: value }));
     });
     write("</ul>");
   });
