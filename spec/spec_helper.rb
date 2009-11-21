@@ -1,4 +1,4 @@
-%w( rubygems spec httparty fileutils ).each {|lib| require lib }
+%w( rubygems spec httparty fileutils tempfile ).each {|lib| require lib }
 
 def asp_server_ip
   ENV['IP'] || '10.5.5.107'
@@ -8,8 +8,27 @@ def asp_server
   ENV['HOST'] || "http://#{ asp_server_ip }/"
 end
 
+def save_and_open response
+  file = Tempfile.new 'classic-asp-testing.html'
+  file.print response
+  file.flush
+  `firefox #{ file.path }`
+end
+
 def get uri
   HTTParty.get File.join(asp_server, uri)
+end
+
+def post uri
+  HTTParty.post File.join(asp_server, uri)
+end
+
+def put uri
+  HTTParty.put File.join(asp_server, uri)
+end
+
+def delete uri
+  HTTParty.delete File.join(asp_server, uri)
 end
 
 def setup directory

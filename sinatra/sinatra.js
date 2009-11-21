@@ -14,6 +14,24 @@ function get(path, block){
   add_route(path, 'GET', block);
 }
 
+// on IIS you cannot POST to paths without extensions!  Oo
+// so we need to add a .asp unless the path is /
+// because ... that's just the way it works!
+function post(path, block){
+  if (path != '/') path = path + '.asp';
+  add_route(path, 'POST', block);
+}
+
+function put(path, block){
+  if (path != '/') path = path + '.asp';
+  add_route(path, 'PUT', block);
+}
+
+function delete_(path, block){
+  if (path != '/') path = path + '.asp';
+  add_route(path, 'DELETE', block);
+}
+
 function sinatra_app(env){
   var path   = env['PATH_INFO']
   var method = env['REQUEST_METHOD'];
@@ -39,5 +57,5 @@ function sinatra_app(env){
     }
   }
 
-  return [ 200, {}, ["Could not find ditty for " + method + ' ' + path] ];
+  return [ 404, {}, ["Could not find ditty for " + method + ' ' + path] ];
 }
