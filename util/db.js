@@ -1,7 +1,35 @@
 // ADO Wrapper
-req(uire('makeClass'));
+req(uire('util/makeClass'));
+req(uire('util/functions'));
 
-var DB = {};
+var DB = {
+
+  getRows: function(recordset){
+    var rows = [];
+    recordset.MoveFirst()
+    while (recordset.EOF != true){
+      var attributes = {};
+      for (var i = 0; i < recordset.Fields.Count; i++){
+        var field = recordset.Fields(i);
+        attributes[field.name] = field.value;
+      }
+      rows[rows.length] = attributes;
+      recordset.MoveNext();
+    }
+    return rows;
+  }
+
+};
+
+DB.Column = makeClass();
+DB.Column.prototype = {};
+
+DB.Table = makeClass();
+DB.Table.prototype = {
+  init: function(options){
+    for (var key in options) this[key] = options[key];
+  }
+};
 
 DB.Connection = makeClass();
 DB.Connection.prototype = {
@@ -14,22 +42,9 @@ DB.Connection.prototype = {
   // returns tables ... just as hashes of info for now
   tables: function(){
     if (this._tables == null){
-      this._tables = {};
-      var rs = this._conn().OpenSchema(20);
-      rs.MoveFirst()
-      while (rs.EOF != true){
-        
-        var name = rs('TABLE_NAME').value;
-        if (this._tables[name] == null)
-          this._tables[name] = {};
-
-        for (var i = 0; i < rs.Fields.Count; i++){
-          var field = rs.Fields(i);
-          this._tables[name][field.name.toLowerCase().replace(/^table_/, '')] = field.value;
-        }
-
-        rs.MoveNext();
-      }
+      var rs       = this._conn().OpenSchema(20);
+      var rows     = DB.getRows(rs);
+      this._tables = map(rows, function(row){ return new DB.Table(row); });
     }
     return this._tables;
   },

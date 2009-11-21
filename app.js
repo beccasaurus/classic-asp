@@ -38,15 +38,13 @@ var Dog = dbClass("dogs");
 get('/db', function(){
   var db = DB.odbc("dogs");
 
-  var tables = db.tables();
-  for (var name in tables){
-    Response.Write("table: " + name);
-    Response.Write("<ul>");
-    for (var key in tables[name]){
-      Response.Write("<li>" + key + " = " + tables[name][key] + "</li>");
-    }
-    Response.Write("</ul>");
-  }
+  each(db.tables(), function(i, table){
+    write("<ul>");
+    each(table, function(key, value){
+      write("<li>" + key + ": " + value + "</li>");
+    });
+    write("</ul>");
+  });
 
   return "db!";
 });
