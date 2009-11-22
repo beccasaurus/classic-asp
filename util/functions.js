@@ -11,7 +11,7 @@ function each( collection, block, include_functions ){
 function map( collection, block ){
   var to_return = [];
   each(collection, function(key, value){
-    to_return[to_return.length] = block(value);
+    to_return[to_return.length] = block(key, value);
   });
   return to_return;
 }
@@ -36,3 +36,17 @@ function nano(text, variables){
 }
 
 function n(text, variables){ return nano(text, variables); }
+
+function coll2hash(asp_collection){
+  var hash = {};
+
+  // from http://andrewu.co.uk/tools/servervariables/
+  //  and http://aspjavascript.com/lesson09.asp
+  for (var objItem = new Enumerator(asp_collection); !objItem.atEnd(); objItem.moveNext()) {
+    var strKeyName  = objItem.item();
+    var strKeyValue = asp_collection(strKeyName).Count() ? asp_collection(strKeyName).Item(1) : "";
+    hash[strKeyName] = strKeyValue;
+  }
+
+  return hash;
+}

@@ -41,7 +41,8 @@ function sinatra_app(env){
     if (block != null){
       
       var environment = {
-        env: env,
+        env:    env,
+        params: coll2hash(Request.Form()),
         render_haml: function(text, scope){
           return Haml.to_html(Haml.parse.call(scope, text));
         },

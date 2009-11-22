@@ -1,3 +1,5 @@
+req(uire('util/functions'));
+
 // something kindof like Rack for classic ASP
 var Rack = {
 

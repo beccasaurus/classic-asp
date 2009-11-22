@@ -19,8 +19,8 @@ def get uri
   HTTParty.get File.join(asp_server, uri)
 end
 
-def post uri
-  HTTParty.post File.join(asp_server, uri)
+def post uri, params = {}
+  HTTParty.post File.join(asp_server, uri), params
 end
 
 def put uri

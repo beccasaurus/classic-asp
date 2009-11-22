@@ -24,4 +24,9 @@ post('/foo', function(){
   return 'POSTed to foo';
 });
 
+post('/params', function(){
+  return JSON.stringify(this.params);
+  return map(this.params, function(key, value){ return '' + key + ': ' + value; }).join();
+});
+
 run(sinatra_app);
