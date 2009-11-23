@@ -51,7 +51,18 @@ describe 'Sinatra' do
   it 'should be able to set custom headers'
   it 'should be able to set custom status code'
 
-  it 'should be able to render haml (inline)'
-  it 'should be able to render haml (from a view file)'
+  it 'should be able to render haml (inline)' do
+    get('/inline-haml').body.should == "\n<h1>hello there</h1>\n"
+  end
+
+  it 'should be able to render haml (inline)(with variables)' do
+    get('/inline-haml-vars').body.should == "\n<h1>FOO</h1>\n"
+  end
+
+  it 'should be able to render haml (from a view file)' do
+    get('/haml').body.should == "\n<h1>hello from file</h1>\n"
+  end
+
+  it 'should be able to render haml (from a view file)(with variables)'
 
 end

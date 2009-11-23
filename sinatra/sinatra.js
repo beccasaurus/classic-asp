@@ -52,7 +52,8 @@ function sinatra_app(env){
           return Haml.to_html(Haml.parse.call(scope, text));
         },
         haml: function(filename, scope){
-          var text = File.read(filename + '.haml');
+          var template = File.join( File.dirname(__FILE__), filename + '.haml' );
+          var text     = File.read(template);
           return this.render_haml(text, scope);
         }
       };
