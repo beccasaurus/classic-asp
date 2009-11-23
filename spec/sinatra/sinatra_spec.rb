@@ -31,11 +31,19 @@ describe 'Sinatra' do
     post('/does-not-exist.asp').body.should include('POST /does-not-exist')
   end
 
-  it 'should be able to get POSTed params' do
+  it 'should be able to get POST params' do
     post('/params.asp', :body => { :foo => 'bar' }).body.should == '{"foo":"bar"}'
   end
 
-  it 'should be able to get query string params'
+  it 'should be able to get query string params' do
+    post('/params.asp', :query => { :chunky => 'bacon' }).body.should == '{"chunky":"bacon"}'
+  end
+
+  it 'should be able to get POST & query string params' do
+    response = post('/params.asp', :body => { :foo => 'bar' }, :query => { :chunky => 'bacon' }).body
+    response.should include('"foo":"bar"')
+    response.should include('"chunky":"bacon"')
+  end
 
   it 'should be able to use Regexp for paths'
   it 'should be able to put tokens in paths, eg. /dogs/:name'

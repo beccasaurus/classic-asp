@@ -39,10 +39,15 @@ function sinatra_app(env){
   if (paths[path] != null){
     var block = paths[path][method];
     if (block != null){
-      
+
+      var params = coll2hash(Request.Form());
+      each(env.QUERY_STRINGS, function(key, value){
+        params[key] = value;
+      });
+
       var environment = {
         env:    env,
-        params: coll2hash(Request.Form()),
+        params: params,
         render_haml: function(text, scope){
           return Haml.to_html(Haml.parse.call(scope, text));
         },
