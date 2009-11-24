@@ -1,6 +1,4 @@
-Response.Write('requiring sinatra <br />');
 req(uire('sinatra/sinatra'));
-Response.Write('required sinatra <br />');
 
 get('/', function(){
   return 'Hello World';
@@ -40,7 +38,6 @@ get('/inline-haml-vars', function(){
 });
 
 get('/haml', function(){
-  return "file, as seen by sinatra, is: " + __FILE__ + '<br />';
   return this.haml('spec/sinatra/haml-view');
 });
 

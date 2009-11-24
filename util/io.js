@@ -31,13 +31,11 @@ var File = {
 
   read: function(filename){
     if (this.exists(filename)){
-      write('opening file: ' + this.path(filename));
       var file = this._object().OpenTextFile(this.path(filename), 1);
       var body = file.ReadAll();
       file.Close();
       return body;
     } else {
-      write('file not found: ' + this.path(filename));
       return "File not found: " + filename;
     }
   }
