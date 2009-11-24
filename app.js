@@ -30,4 +30,9 @@ get('/dogs/:name', function(){
   return JSON.stringify(dog);
 });
 
+get('/dog/:id', function(){
+  var dog = Dog.get(this.params.id);
+  return JSON.stringify(dog);
+});
+
 run(sinatra_app);

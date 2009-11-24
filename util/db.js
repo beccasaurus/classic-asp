@@ -127,6 +127,10 @@ DB.model = function(db, table_name){
     return klass.all(options)[0];
   };
 
+  klass.get = function(id){
+    return klass.first({ id: id });
+  };
+
   klass.count = function(options){
     if (options == null) options = {};
     var rows = klass.query('select count(*) from ' + klass.table_name);

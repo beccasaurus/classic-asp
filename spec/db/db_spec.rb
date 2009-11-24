@@ -48,6 +48,19 @@ describe 'DB' do
     get('/dogs/Snoopy').should == '{"id":2,"name":"Snoopy"}'
   end
 
+  it 'should be able to get() by id' do
+    get('/dog/1').should == nil
+    get('/dog/2').should == nil
+
+    Dog.create :name => 'Rover'
+    get('/dog/1').should == '{"id":1,"name":"Rover"}'
+    get('/dog/2').should == nil
+
+    Dog.create :name => 'Snoopy'
+    get('/dog/1').should == '{"id":1,"name":"Rover"}'
+    get('/dog/2').should == '{"id":2,"name":"Snoopy"}'
+  end
+
   it 'should be able to pass integer equals conditions to first()'
 
 end
