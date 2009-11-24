@@ -46,8 +46,10 @@ function sinatra_app(env){
       });
 
       var environment = {
-        env:    env,
-        params: params,
+        status:  200,
+        env:     env,
+        params:  params,
+        headers: { 'Content-Type': 'text/html' },
         render_haml: function(text, scope){
           return Haml.to_html(Haml.parse.call(scope, text));
         },
@@ -59,7 +61,7 @@ function sinatra_app(env){
 
       var body = block.apply(environment); // bind to 'this'
 
-      return [ 200, {}, [body] ]
+      return [ environment.status, environment.headers, [body] ]
     }
   }
 

@@ -41,4 +41,18 @@ get('/haml', function(){
   return this.haml('spec/sinatra/haml-view');
 });
 
+get('/haml-vars', function(){
+  return this.haml('spec/sinatra/haml-view-vars', { foo: 'FOO' });
+});
+
+get('/return-404', function(){
+  this.status = 404;
+  return "hello!";
+});
+
+get('/foo.xml', function(){
+  this.headers['Content-Type'] = 'application/xml';
+  return "<xml></xml>!";
+});
+
 run(sinatra_app);

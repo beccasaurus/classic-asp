@@ -48,8 +48,14 @@ describe 'Sinatra' do
   it 'should be able to use Regexp for paths'
   it 'should be able to put tokens in paths, eg. /dogs/:name'
 
-  it 'should be able to set custom headers'
-  it 'should be able to set custom status code'
+  it 'should be able to set custom headers' do
+    get('/foo.xml').headers['content-type'].should == ['application/xml']
+  end
+
+  it 'should be able to set custom status code' do
+    get('/return-404').body.should == 'hello!'
+    get('/return-404').code.should == 404
+  end
 
   it 'should be able to render haml (inline)' do
     get('/inline-haml').body.should == "\n<h1>hello there</h1>\n"
@@ -63,6 +69,8 @@ describe 'Sinatra' do
     get('/haml').body.should == "\n<h1>hello from file</h1>\n"
   end
 
-  it 'should be able to render haml (from a view file)(with variables)'
+  it 'should be able to render haml (from a view file)(with variables)' do
+    get('/haml-vars').body.should == "\n<h1>hello from FOO</h1>\n"
+  end
 
 end
