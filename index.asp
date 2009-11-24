@@ -44,9 +44,14 @@ Response.Write(this['eval']);
 
 var message = "";
 
-this['eval'] = function(code){
-  message = message + "called eval with " + code;
-  return 'hi';
+var __GLOBAL__ = this;
+//__GLOBAL__['old_eval'] = __GLOBAL__['eval'];
+__GLOBAL__.old_eval = __GLOBAL__['eval'];
+
+__GLOBAL__['eval'] = function(code){
+  message = message + "called eval with " + code + '<br />';
+  message = message + "global: " + __GLOBAL__ + '<br />';
+ // __GLOBAL__['old_eval'].apply(__GLOBAL__, arguments);
 }
 
 // eval('var x = 5;');
@@ -54,8 +59,6 @@ this['eval'] = function(code){
 eval("function testing(){ Response.Write('hello from testing'); }");
 
 Response.Write("<br />MESSAGE: " + message + '<br />');
-
-this.testing;
 
 Response.Write(this['eval']);
 Response.Write("<br />END");
