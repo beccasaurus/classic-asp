@@ -1,4 +1,3 @@
-// ADO Wrapper
 req(uire('util/makeClass'));
 req(uire('util/functions'));
 
@@ -6,6 +5,7 @@ var DB = {
 
   getRows: function(recordset){
     var rows = [];
+    if (recordset.EOF == true) return rows;
     recordset.MoveFirst()
     while (recordset.EOF != true){
       var attributes = {};
@@ -49,7 +49,7 @@ DB.Connection.prototype = {
     if (this._tables == null){
       var rs       = this._conn().OpenSchema(20); // all tables
       var rows     = DB.getRows(rs);
-      this._tables = map(rows, function(row){ return new DB.Table(row); });
+      this._tables = map(rows, function(i,row){ return new DB.Table(row); });
     }
     return this._tables;
   },
@@ -57,7 +57,7 @@ DB.Connection.prototype = {
   columns: function(table_name){
     var rs      = this._conn().OpenSchema(4); // all columns
     var rows    = DB.getRows(rs);
-    var columns = map(rows, function(row){ return new DB.Column(row); });
+    var columns = map(rows, function(i,row){ return new DB.Column(row); });
     if (table_name != undefined)
       columns = select(columns, function(column){ return column.table_name == table_name; });
     return columns;
@@ -88,7 +88,8 @@ DB.model = function(db, table_name){
   // variables
   klass.db         = db;
   klass.table_name = table_name;
-  
+  klass.columns    = db.columns(table_name);
+
   // instance functions
   klass.prototype = {
     init: function(options){
@@ -113,9 +114,9 @@ DB.model = function(db, table_name){
       if (options.limit != null) sql = sql + " LIMIT " + options.limit;
     }
 
-    write('SQL: ' + sql + '<br />');
+    // write('SQL: ' + sql + '<br />');
 
-    return map(klass.query(sql), function(row){
+    return map(klass.query(sql), function(i,row){
       return new klass(row);
     });
   };
@@ -124,6 +125,12 @@ DB.model = function(db, table_name){
     if (options == null) options = {};
     options.limit = 1;
     return klass.all(options)[0];
+  };
+
+  klass.count = function(options){
+    if (options == null) options = {};
+    var rows = klass.query('select count(*) from ' + klass.table_name);
+    return rows[0]['count(*)'];
   };
 
   // get column information (we do this once!)

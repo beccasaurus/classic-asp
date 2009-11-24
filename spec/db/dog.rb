@@ -7,5 +7,5 @@ class Dog
   property :name, String, :nullable => false, :unique => true
 end
 
-DataMapper.setup :default, "sqlite3://#{ File.expand_path(File.dirname(__FILE__), 'dogs.sqlite') }"
+DataMapper.setup :default, "sqlite3://#{ File.expand_path(File.dirname(__FILE__)) + '/dogs.sqlite' }"
 DataMapper.auto_upgrade!

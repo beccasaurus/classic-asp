@@ -88,4 +88,8 @@ describe 'Sinatra' do
     get('/haml-vars').body.should == "\n<h1>hello from FOO</h1>\n"
   end
 
+  it 'should be able to have function accept :named argument'
+
+  it 'should be able to have function accept regular regular expression matches'
+
 end
