@@ -63,4 +63,17 @@ describe 'DB' do
 
   it 'should be able to pass integer equals conditions to first()'
 
+  it 'should be able to create() a dog' do
+    Dog.count.should == 0
+
+    post('/dogs.asp', :body => { :name => 'Rover' }).should == 'hi'
+
+    Dog.count.should == 1
+    Dog.first.name.should == 'Rover'
+  end
+
+  it 'should be able to save() a dog (CREATE)'
+
+  it 'should be able to save() a dog (UPDATE)'
+
 end

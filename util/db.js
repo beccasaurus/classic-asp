@@ -101,6 +101,10 @@ DB.model = function(db, table_name){
   klass.query = function(sql){
     return DB.getRows(klass.db._conn().Execute(sql));
   };
+  klass.nonquery = function(sql){
+    write(sql);
+    klass.db._conn().Execute('insert into dogs (name) VALUES ("Testing")');
+  };
 
   klass.all = function(options){
     var sql = "select * from " + klass.table_name;
@@ -129,6 +133,13 @@ DB.model = function(db, table_name){
 
   klass.get = function(id){
     return klass.first({ id: id });
+  };
+
+  klass.create = function(attributes){
+    var sql = 'INSERT INTO ' + klass.table_name;
+    sql = sql + ' (' + map(attributes, function(name,value){ return name; }).join(', ') + ') ';
+    sql = sql + 'VALUES (' + map(attributes, function(name,value){ return JSON.stringify(value); }).join(', ') + ')';
+    klass.nonquery(sql);
   };
 
   klass.count = function(options){

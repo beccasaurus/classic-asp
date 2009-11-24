@@ -92,4 +92,8 @@ describe 'Sinatra' do
 
   it 'should be able to have function accept regular regular expression matches'
 
+  it 'should be able to easily redirect'
+
+  it 'should be able to accept nested POST parameters'
+
 end

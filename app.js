@@ -35,4 +35,9 @@ get('/dog/:id', function(){
   return JSON.stringify(dog);
 });
 
+post('/dogs', function(){
+  Dog.create(this.params);
+  return 'should have created dog ...';
+});
+
 run(sinatra_app);

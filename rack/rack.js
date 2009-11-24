@@ -46,6 +46,7 @@ var Rack = {
           } else {
             // this is not a real query string!  it just has the path in it.
             path_info = path_with_query;
+            delete query_strings[key];
           }
         }
       });
