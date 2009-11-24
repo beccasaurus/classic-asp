@@ -55,4 +55,16 @@ get('/foo.xml', function(){
   return "<xml></xml>!";
 });
 
+get(/regex-\d/, function(){
+  return "Regexp match";
+});
+
+get(/regex-match-(\d+)/, function(){
+  return "Number: " + this.params.matches[0];
+});
+
+get('/dynamic/:name', function(){
+  return "Dynamic: " + this.params['name'];
+});
+
 run(sinatra_app);

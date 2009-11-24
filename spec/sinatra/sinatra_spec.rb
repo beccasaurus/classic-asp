@@ -45,8 +45,23 @@ describe 'Sinatra' do
     response.should include('"chunky":"bacon"')
   end
 
-  it 'should be able to use Regexp for paths'
-  it 'should be able to put tokens in paths, eg. /dogs/:name'
+  it 'should be able to use Regexp for paths' do
+    get('/regex-1').body.should == 'Regexp match'
+    get('/regex-8').body.should == 'Regexp match'
+  end
+
+  it 'should be able to get the matches from Regexp used for paths' do
+    get('/regex-match-1' ).body.should == 'Number: 1'
+    get('/regex-match-8' ).body.should == 'Number: 8'
+    get('/regex-match-14').body.should == 'Number: 14'
+  end
+
+  it 'should support splats in paths'
+
+  it 'should be able to put tokens in paths, eg. /dogs/:name' do
+    get('/dynamic/foo').body.should == "Dynamic: foo"
+    get('/dynamic/bar').body.should == "Dynamic: bar"
+  end
 
   it 'should be able to set custom headers' do
     get('/foo.xml').headers['content-type'].should == ['application/xml']

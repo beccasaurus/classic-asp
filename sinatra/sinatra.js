@@ -1,13 +1,44 @@
 req(uire('rack/rack'));
 req(uire('util/io'));
 req(uire('util/json2'));
+req(uire('util/makeClass'));
+req(uire('sinatra/haml'));
 req(uire('sinatra/haml'));
 
-var paths = {};
+var routes = [];
+
+var SinatraRoute = makeClass();
+SinatraRoute.prototype = {
+  init: function(path, method, block){
+    this.path   = path;
+    this.method = method;
+    this.block  = block;
+
+    // allow regular expressions (as paths)
+    if (typeof(this.path['test']) == 'function'){
+      this.regexp = this.path;
+    } else {
+      this.regexp = new RegExp("^" + this.path + "$");
+    }
+  },
+
+  matches: function(path, method){
+    if (this.method != method) // wrong method
+      return false;
+
+    if (this.regexp.test(path)) // method and regexp match
+      return true;
+  }
+};
+
+function match_route(path, method){
+  for (var i in routes)
+    if (routes[i].matches(path, method))
+      return routes[i];
+}
 
 function add_route(path, method, block){
-  if (paths[path] == null)         paths[path]         = {};
-  if (paths[path][method] == null) paths[path][method] = block;
+  routes[ routes.length ] = new SinatraRoute(path, method, block);
 }
 
 function get(path, block){
@@ -36,33 +67,41 @@ function sinatra_app(env){
   var path   = env['PATH_INFO']
   var method = env['REQUEST_METHOD'];
 
-  if (paths[path] != null){
-    var block = paths[path][method];
-    if (block != null){
+  var route = match_route(path, method);
+  if (route != null){
+    var block = route.block;
 
-      var params = coll2hash(Request.Form());
-      each(env.QUERY_STRINGS, function(key, value){
-        params[key] = value;
-      });
+    var params = coll2hash(Request.Form());
+    each(env.QUERY_STRINGS, function(key, value){
+      params[key] = value;
+    });
 
-      var environment = {
-        status:  200,
-        env:     env,
-        params:  params,
-        headers: { 'Content-Type': 'text/html' },
-        render_haml: function(text, scope){
-          return Haml.to_html(Haml.parse.call(scope, text));
-        },
-        haml: function(filename, scope){
-          var text = File.read(filename + '.haml');
-          return this.render_haml(text, scope);
-        }
-      };
+    var environment = {
+      status:  200,
+      env:     env,
+      params:  params,
+      headers: { 'Content-Type': 'text/html' },
+      render_haml: function(text, scope){
+        return Haml.to_html(Haml.parse.call(scope, text));
+      },
+      haml: function(filename, scope){
+        var text = File.read(filename + '.haml');
+        return this.render_haml(text, scope);
+      }
+    };
 
-      var body = block.apply(environment); // bind to 'this'
-
-      return [ environment.status, environment.headers, [body] ]
+    // take any matches from the regular expression match 
+    // and add them to params, as params.matches
+    var regexp_matches = path.match(route.regexp);
+    if (regexp_matches != null){
+      regexp_matches.shift(); // remove the first (the full match)
+      if (regexp_matches.length > 0)
+        environment.params.matches = regexp_matches;
     }
+
+    var body = block.apply(environment); // bind to 'this'
+
+    return [ environment.status, environment.headers, [body] ]
   }
 
   return [ 404, {}, ["Could not find ditty for " + method + ' ' + path] ];
