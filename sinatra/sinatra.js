@@ -18,7 +18,18 @@ SinatraRoute.prototype = {
     if (typeof(this.path['test']) == 'function'){
       this.regexp = this.path;
     } else {
-      this.regexp = new RegExp("^" + this.path + "$");
+
+      // grab named parameters, eg. /dogs/:name
+      var named_parameters = this.path.match(/:([^\/]+)/g);
+      for (var i in named_parameters)
+        named_parameters[i] = named_parameters[i].toString().replace(':', '');
+      
+      if (named_parameters != null && named_parameters.length > 0){
+        this.named_parameters = named_parameters;
+        this.regexp = new RegExp("^" + this.path.replace(/:([^\/]+)/g, '([^\/]+)') + "$");
+      } else {
+        this.regexp = new RegExp("^" + this.path + "$");
+      }
     }
   },
 
@@ -98,6 +109,18 @@ function sinatra_app(env){
       if (regexp_matches.length > 0)
         environment.params.matches = regexp_matches;
     }
+
+    // add named parameters to the params
+    if (route.named_parameters != null && regexp_matches != null){
+      for (var i in route.named_parameters){
+        var name  = route.named_parameters[i];
+        var value = regexp_matches[i];
+        environment.params[name] = value;
+      }
+    }
+
+    // make the raw route available, incase we need it ... PRIVATE API!
+    environment._route = route;
 
     var body = block.apply(environment); // bind to 'this'
 
