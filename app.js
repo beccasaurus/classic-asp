@@ -25,4 +25,9 @@ get('/count', function(){
   return Dog.count();
 });
 
+get('/dogs/:name', function(){
+  var dog = Dog.first({ name: this.params.name });
+  return JSON.stringify(dog);
+});
+
 run(sinatra_app);

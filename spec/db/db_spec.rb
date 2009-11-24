@@ -38,7 +38,15 @@ describe 'DB' do
     get('/count').should == '2'
   end
 
-  it 'should be able to pass string equals conditions to first()'
+  it 'should be able to pass string equals conditions to first()' do
+    get('/dogs/Snoopy').should == nil
+
+    Dog.create :name => 'Rover'
+    get('/dogs/Snoopy').should == nil
+
+    Dog.create :name => 'Snoopy'
+    get('/dogs/Snoopy').should == '{"id":2,"name":"Snoopy"}'
+  end
 
   it 'should be able to pass integer equals conditions to first()'
 
