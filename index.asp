@@ -39,4 +39,25 @@ Response.Write('required app <br />');
 
 __FILE__ = Server.MapPath('index.asp'); // after executing files, reset the __FILE__
 
+Response.Write("TESTING</br>");
+Response.Write(this['eval']);
+
+var message = "";
+
+this['eval'] = function(code){
+  message = message + "called eval with " + code;
+  return 'hi';
+}
+
+// eval('var x = 5;');
+
+eval("function testing(){ Response.Write('hello from testing'); }");
+
+Response.Write("<br />MESSAGE: " + message + '<br />');
+
+this.testing;
+
+Response.Write(this['eval']);
+Response.Write("<br />END");
+
 %>
