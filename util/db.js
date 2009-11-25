@@ -93,23 +93,42 @@ DB.model = function(db, table_name){
   // instance functions
   klass.prototype = {
     init: function(attributes){
-      this.attributes = attributes;
+      this.update_attributes(attributes);
+    },
+    update_attributes: function(attributes){
       for (var key in attributes) this[key] = attributes[key];
     },
+    db_attributes: function(){
+      var attrs = {};
+      for (var i in klass.columns){
+        var name = klass.columns[i].name;
+        if (name != 'id' && this[name] != null)
+          attrs[name] = this[name];
+      }
+      return attrs;
+    },
     save: function(){
+      var sql = '';
+
       if (this.id != null){
-        var sql = 'UPDATE ' + klass.table_name + ' SET ';
-        each(this.attributes, function(key, value){
+        
+        // UPDATE
+        sql = 'UPDATE ' + klass.table_name + ' SET ';
+        each(this.db_attributes(), function(key, value){
           if (key != 'id')
             sql = sql + key + '=' + JSON.stringify(value) + ' ';
         });
-        sql = sql + 'WHERE id=' + this.attributes.id;
+        sql = sql + 'WHERE id=' + this.id;
+
       } else {
-        var sql = 'INSERT INTO ' + klass.table_name;
-        sql = sql + ' (' + map(this.attributes, function(name,value){ return name; }).join(', ') + ') ';
-        sql = sql + 'VALUES (' + map(this.attributes, function(name,value){ return JSON.stringify(value); }).join(', ') + ')';
+      
+        // INSERT  
+        sql = 'INSERT INTO ' + klass.table_name;
+        sql = sql + ' (' + map(this.db_attributes(), function(name,value){ return name; }).join(', ') + ') ';
+        sql = sql + 'VALUES (' + map(this.db_attributes(), function(name,value){ return JSON.stringify(value); }).join(', ') + ')';
+      
       }
-      klass.nonquery(sql);
+      klass.nonquery(sql); 
     }
   };
 
