@@ -17,15 +17,16 @@ describe 'DB' do
     get('/all').should == '[]'
 
     Dog.create :name => 'Rover'
-    get('/all').should == '[{"id":1,"name":"Rover"}]'
+    get('/all').should include('"name":"Rover"')
 
     Dog.create :name => 'Snoopy'
-    get('/all').should == '[{"id":1,"name":"Rover"},{"id":2,"name":"Snoopy"}]'
+    get('/all').should include('"name":"Rover"')
+    get('/all').should include('"name":"Snoopy"')
   end
 
   it 'should be able to get a first() model' do
     Dog.create :name => 'Rover'
-    get('/first').should == '{"id":1,"name":"Rover"}'
+    get('/first').should include('"name":"Rover"')
   end
 
   it "should be able to get a model's count()" do
@@ -45,7 +46,7 @@ describe 'DB' do
     get('/dogs/Snoopy').should == nil
 
     Dog.create :name => 'Snoopy'
-    get('/dogs/Snoopy').should == '{"id":2,"name":"Snoopy"}'
+    get('/dogs/Snoopy').should include('"name":"Snoopy"')
   end
 
   it 'should be able to get() by id' do
@@ -53,12 +54,12 @@ describe 'DB' do
     get('/dog/2').should == nil
 
     Dog.create :name => 'Rover'
-    get('/dog/1').should == '{"id":1,"name":"Rover"}'
+    get('/dog/1').should include('"name":"Rover"')
     get('/dog/2').should == nil
 
     Dog.create :name => 'Snoopy'
-    get('/dog/1').should == '{"id":1,"name":"Rover"}'
-    get('/dog/2').should == '{"id":2,"name":"Snoopy"}'
+    get('/dog/1').should include('"name":"Rover"')
+    get('/dog/2').should include('"name":"Snoopy"')
   end
 
   it 'should be able to pass integer equals conditions to first()'
@@ -69,10 +70,17 @@ describe 'DB' do
     post '/dogs.asp', :body => { :name => 'Rover' }
 
     get('/count').should == '1'
-    get('/first').should == '{"id":1,"name":"Rover"}'
+    get('/first').should include('"name":"Rover"')
   end
 
-  it 'should be able to save() a dog (CREATE)'
+  it 'should be able to save() a dog (CREATE)' do
+    get('/count').should == '0'
+
+    post '/create-via-save.asp', :body => { :name => 'Rover' }
+
+    get('/count').should == '1'
+    get('/first').should include('"name":"Rover"')
+  end
 
   it 'should be able to save() a dog (UPDATE)'
 

@@ -40,4 +40,10 @@ post('/dogs', function(){
   return 'should have created dog ...';
 });
 
+post('/create-via-save', function(){
+  var rover = new Dog(this.params);
+  rover.save();
+  return 'should have created dog ...';
+});
+
 run(sinatra_app);

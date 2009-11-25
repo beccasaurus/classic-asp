@@ -92,8 +92,16 @@ DB.model = function(db, table_name){
 
   // instance functions
   klass.prototype = {
-    init: function(options){
-      for (var key in options) this[key] = options[key];
+    init: function(attributes){
+      this.attributes = attributes;
+      for (var key in attributes) this[key] = attributes[key];
+    },
+    save: function(){
+      // TODO check for new record and do INSERT versus UPDATE
+      var sql = 'INSERT INTO ' + klass.table_name;
+      sql = sql + ' (' + map(this.attributes, function(name,value){ return name; }).join(', ') + ') ';
+      sql = sql + 'VALUES (' + map(this.attributes, function(name,value){ return JSON.stringify(value); }).join(', ') + ')';
+      klass.nonquery(sql);
     }
   };
 
@@ -135,10 +143,8 @@ DB.model = function(db, table_name){
   };
 
   klass.create = function(attributes){
-    var sql = 'INSERT INTO ' + klass.table_name;
-    sql = sql + ' (' + map(attributes, function(name,value){ return name; }).join(', ') + ') ';
-    sql = sql + 'VALUES (' + map(attributes, function(name,value){ return JSON.stringify(value); }).join(', ') + ')';
-    klass.nonquery(sql);
+    var model = new klass(attributes);
+    model.save();
   };
 
   klass.count = function(options){
