@@ -67,4 +67,20 @@ get('/dynamic/:name', function(){
   return "Dynamic: " + this.params['name'];
 });
 
+get(/\/say\/(\w+)\/(\w+)/, function(foo, bar){
+  return 'Say: ' + foo + ' ... ' + bar;
+});
+
+get(/\/say\/(\w+)/, function(foo){
+  return 'Say: ' + foo;
+});
+
+get('/say2/:something/:else', function(foo, bar){
+  return 'Say: ' + foo + ' ... ' + bar;
+});
+
+get('/say2/:something', function(foo){
+  return 'Say: ' + foo;
+});
+
 run(sinatra_app);

@@ -123,7 +123,7 @@ function sinatra_app(env){
     // make the raw route available, incase we need it ... PRIVATE API!
     environment._route = route;
 
-    var body = block.apply(environment); // bind to 'this'
+    var body = block.apply(environment, regexp_matches); // bind to 'this'
 
     return [ environment.status, environment.headers, [body] ]
   }
