@@ -100,7 +100,9 @@ describe 'Sinatra' do
     get('/say/how/goes' ).should == 'Say: how ... goes'
   end
 
-  it 'should be able to easily redirect'
+  it 'should be able to easily redirect' do
+    get('/redirects').body.should == 'You were redirected'
+  end
 
   it 'should be able to accept nested POST parameters'
 

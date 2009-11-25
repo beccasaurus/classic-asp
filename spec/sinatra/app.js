@@ -83,4 +83,12 @@ get('/say2/:something', function(foo){
   return 'Say: ' + foo;
 });
 
+get('/redirects', function(){
+  this.redirectTo('/redirect-to-me');
+});
+
+get('/redirect-to-me', function(){
+  return "You were redirected";
+});
+
 run(sinatra_app);

@@ -99,6 +99,10 @@ function sinatra_app(env){
       haml: function(filename, scope){
         var text = File.read(filename + '.haml');
         return this.render_haml(text, scope);
+      },
+      redirectTo: function(path){
+        environment.status = 301;
+        environment.headers['Location'] = 'http://' + env['SERVER_NAME'] + path;
       }
     };
 
