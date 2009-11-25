@@ -102,8 +102,7 @@ DB.model = function(db, table_name){
     return DB.getRows(klass.db._conn().Execute(sql));
   };
   klass.nonquery = function(sql){
-    write(sql);
-    klass.db._conn().Execute('insert into dogs (name) VALUES ("Testing")');
+    klass.db._conn().Execute(sql);
   };
 
   klass.all = function(options){
