@@ -97,10 +97,18 @@ DB.model = function(db, table_name){
       for (var key in attributes) this[key] = attributes[key];
     },
     save: function(){
-      // TODO check for new record and do INSERT versus UPDATE
-      var sql = 'INSERT INTO ' + klass.table_name;
-      sql = sql + ' (' + map(this.attributes, function(name,value){ return name; }).join(', ') + ') ';
-      sql = sql + 'VALUES (' + map(this.attributes, function(name,value){ return JSON.stringify(value); }).join(', ') + ')';
+      if (this.id != null){
+        var sql = 'UPDATE ' + klass.table_name + ' SET ';
+        each(this.attributes, function(key, value){
+          if (key != 'id')
+            sql = sql + key + '=' + JSON.stringify(value) + ' ';
+        });
+        sql = sql + 'WHERE id=' + this.attributes.id;
+      } else {
+        var sql = 'INSERT INTO ' + klass.table_name;
+        sql = sql + ' (' + map(this.attributes, function(name,value){ return name; }).join(', ') + ') ';
+        sql = sql + 'VALUES (' + map(this.attributes, function(name,value){ return JSON.stringify(value); }).join(', ') + ')';
+      }
       klass.nonquery(sql);
     }
   };
@@ -124,8 +132,6 @@ DB.model = function(db, table_name){
       
       if (options.limit != null) sql = sql + " LIMIT " + options.limit;
     }
-
-    // write('SQL: ' + sql + '<br />');
 
     return map(klass.query(sql), function(i,row){
       return new klass(row);

@@ -82,6 +82,15 @@ describe 'DB' do
     get('/first').should include('"name":"Rover"')
   end
 
-  it 'should be able to save() a dog (UPDATE)'
+  # very custom version, with 1 attribute ... need better tests with update_attributes, etc
+  it 'should be able to save() a dog (UPDATE)' do
+    post '/create-via-save.asp', :body => { :name => 'Rover' }
+    get('/count').should == '1'
+    get('/first').should include('"name":"Rover"')
+
+    put '/update-dog/Rover.asp', :body => { :name => 'Snoopy' }
+    get('/count').should == '1'
+    get('/first').should include('"name":"Snoopy"')
+  end
 
 end

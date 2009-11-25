@@ -20,13 +20,13 @@ SinatraRoute.prototype = {
     } else {
 
       // grab named parameters, eg. /dogs/:name
-      var named_parameters = this.path.match(/:([^\/]+)/g);
+      var named_parameters = this.path.match(/:([^\/\.]+)/g);
       for (var i in named_parameters)
         named_parameters[i] = named_parameters[i].toString().replace(':', '');
       
       if (named_parameters != null && named_parameters.length > 0){
         this.named_parameters = named_parameters;
-        this.regexp = new RegExp("^" + this.path.replace(/:([^\/]+)/g, '([^\/]+)') + "$");
+        this.regexp = new RegExp("^" + this.path.replace(/:([^\/\.]+)/g, '([^\/]+)') + "$");
       } else {
         this.regexp = new RegExp("^" + this.path + "$");
       }
@@ -34,6 +34,7 @@ SinatraRoute.prototype = {
   },
 
   matches: function(path, method){
+    // write('matching ' + this.regexp + ' against ' + path + "\n");
     if (this.method != method) // wrong method
       return false;
 

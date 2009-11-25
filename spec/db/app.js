@@ -46,4 +46,11 @@ post('/create-via-save', function(){
   return 'should have created dog ...';
 });
 
+put('/update-dog/:old_name', function(){
+  var dog = Dog.first({ name: this.params.old_name });
+  dog.attributes.name = this.params.name; // very custom ... need to implement 'update_attributes'
+  dog.save();
+  return 'should have updated Dog: ' + JSON.stringify(dog);
+});
+
 run(sinatra_app);

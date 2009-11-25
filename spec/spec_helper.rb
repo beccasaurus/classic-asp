@@ -24,8 +24,8 @@ def post uri, params = {}
   HTTParty.post File.join(asp_server, uri), params
 end
 
-def put uri
-  HTTParty.put File.join(asp_server, uri)
+def put uri, params = {}
+  HTTParty.put File.join(asp_server, uri), params
 end
 
 def delete uri

@@ -1,49 +1,70 @@
 req(uire('sinatra/sinatra'));
-req(uire('util/makeClass'));
-req(uire('util/db'));
-
-var db  = DB.odbc("dogs");
-var Dog = db.model("dogs");
 
 get('/', function(){
-  return map(db.tables(), function(t){ return t.name; }).join(', ');
+  return 'Hello World';
 });
 
-get('/dog-columns', function(){
-  return JSON.stringify(Dog.columns);
+post('/', function(){
+  return 'POST!';
 });
 
-get('/all', function(){
-  return JSON.stringify(Dog.all());
+put('/', function(){
+  return 'PUT!';
 });
 
-get('/first', function(){
-  return JSON.stringify(Dog.first());
+delete_('/', function(){
+  return 'DELETE!';
 });
 
-get('/count', function(){
-  return Dog.count();
+get('/foo', function(){
+  return 'Bar';
 });
 
-get('/dogs/:name', function(){
-  var dog = Dog.first({ name: this.params.name });
-  return JSON.stringify(dog);
+post('/foo', function(){
+  return 'POSTed to foo';
 });
 
-get('/dog/:id', function(){
-  var dog = Dog.get(this.params.id);
-  return JSON.stringify(dog);
+post('/params', function(){
+  return JSON.stringify(this.params);
+  return map(this.params, function(key, value){ return '' + key + ': ' + value; }).join();
 });
 
-post('/dogs', function(){
-  Dog.create(this.params);
-  return 'should have created dog ...';
+get('/inline-haml', function(){
+  return this.render_haml('%h1 hello there');
 });
 
-post('/create-via-save', function(){
-  var rover = new Dog(this.params);
-  rover.save();
-  return 'should have created dog ...';
+get('/inline-haml-vars', function(){
+  return this.render_haml('%h1= foo', { foo: 'FOO' });
+});
+
+get('/haml', function(){
+  return this.haml('spec/sinatra/haml-view');
+});
+
+get('/haml-vars', function(){
+  return this.haml('spec/sinatra/haml-view-vars', { foo: 'FOO' });
+});
+
+get('/return-404', function(){
+  this.status = 404;
+  return "hello!";
+});
+
+get('/foo.xml', function(){
+  this.headers['Content-Type'] = 'application/xml';
+  return "<xml></xml>!";
+});
+
+get(/regex-\d/, function(){
+  return "Regexp match";
+});
+
+get(/regex-match-(\d+)/, function(){
+  return "Number: " + this.params.matches[0];
+});
+
+get('/dynamic/:name', function(){
+  return "Dynamic: " + this.params['name'];
 });
 
 run(sinatra_app);
