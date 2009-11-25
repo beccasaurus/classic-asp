@@ -106,4 +106,6 @@ describe 'Sinatra' do
 
   it 'should be able to accept nested POST parameters'
 
+  it 'should be able to render a layout'
+
 end

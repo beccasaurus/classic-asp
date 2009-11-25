@@ -3,7 +3,6 @@ req(uire('util/io'));
 req(uire('util/json2'));
 req(uire('util/makeClass'));
 req(uire('sinatra/haml'));
-req(uire('sinatra/haml'));
 
 var routes = [];
 
