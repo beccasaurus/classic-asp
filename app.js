@@ -1,94 +1,96 @@
 req(uire('sinatra/sinatra'));
 
-get('/', function(){
-  return 'Hello World';
-});
+run(new Sinatra.Application(function(){
 
-post('/', function(){
-  return 'POST!';
-});
+  this.get('/', function(){
+    return 'Hello World';
+  });
 
-put('/', function(){
-  return 'PUT!';
-});
+  this.post('/', function(){
+    return 'POST!';
+  });
 
-delete_('/', function(){
-  return 'DELETE!';
-});
+  this.put('/', function(){
+    return 'PUT!';
+  });
 
-get('/foo', function(){
-  return 'Bar';
-});
+  this.delete_('/', function(){
+    return 'DELETE!';
+  });
 
-post('/foo', function(){
-  return 'POSTed to foo';
-});
+  this.get('/foo', function(){
+    return 'Bar';
+  });
 
-post('/params', function(){
-  return JSON.stringify(this.params);
-  return map(this.params, function(key, value){ return '' + key + ': ' + value; }).join();
-});
+  this.post('/foo', function(){
+    return 'POSTed to foo';
+  });
 
-get('/inline-haml', function(){
-  return this.render_haml('%h1 hello there');
-});
+  this.post('/params', function(){
+    return JSON.stringify(this.params);
+    return map(this.params, function(key, value){ return '' + key + ': ' + value; }).join();
+  });
 
-get('/inline-haml-vars', function(){
-  return this.render_haml('%h1= foo', { foo: 'FOO' });
-});
+  this.get('/inline-haml', function(){
+    return this.render_haml('%h1 hello there');
+  });
 
-get('/haml', function(){
-  return this.haml('spec/sinatra/haml-view');
-});
+  this.get('/inline-haml-vars', function(){
+    return this.render_haml('%h1= foo', { foo: 'FOO' });
+  });
 
-get('/haml-vars', function(){
-  return this.haml('spec/sinatra/haml-view-vars', { foo: 'FOO' });
-});
+  this.get('/haml', function(){
+    return this.haml('spec/sinatra/haml-view');
+  });
 
-get('/return-404', function(){
-  this.status = 404;
-  return "hello!";
-});
+  this.get('/haml-vars', function(){
+    return this.haml('spec/sinatra/haml-view-vars', { foo: 'FOO' });
+  });
 
-get('/foo.xml', function(){
-  this.headers['Content-Type'] = 'application/xml';
-  return "<xml></xml>!";
-});
+  this.get('/return-404', function(){
+    this.status = 404;
+    return "hello!";
+  });
 
-get(/regex-\d/, function(){
-  return "Regexp match";
-});
+  this.get('/foo.xml', function(){
+    this.headers['Content-Type'] = 'application/xml';
+    return "<xml></xml>!";
+  });
 
-get(/regex-match-(\d+)/, function(){
-  return "Number: " + this.params.matches[0];
-});
+  this.get(/regex-\d/, function(){
+    return "Regexp match";
+  });
 
-get('/dynamic/:name', function(){
-  return "Dynamic: " + this.params['name'];
-});
+  this.get(/regex-match-(\d+)/, function(){
+    return "Number: " + this.params.matches[0];
+  });
 
-get(/\/say\/(\w+)\/(\w+)/, function(foo, bar){
-  return 'Say: ' + foo + ' ... ' + bar;
-});
+  this.get('/dynamic/:name', function(){
+    return "Dynamic: " + this.params['name'];
+  });
 
-get(/\/say\/(\w+)/, function(foo){
-  return 'Say: ' + foo;
-});
+  this.get(/\/say\/(\w+)\/(\w+)/, function(foo, bar){
+    return 'Say: ' + foo + ' ... ' + bar;
+  });
 
-get('/say2/:something/:else', function(foo, bar){
-  return 'Say: ' + foo + ' ... ' + bar;
-});
+  this.get(/\/say\/(\w+)/, function(foo){
+    return 'Say: ' + foo;
+  });
 
-get('/say2/:something', function(foo){
-  return 'Say: ' + foo;
-});
+  this.get('/say2/:something/:else', function(foo, bar){
+    return 'Say: ' + foo + ' ... ' + bar;
+  });
 
-get('/redirects', function(){
-  this.redirectTo('/redirect-to-me');
-});
+  this.get('/say2/:something', function(foo){
+    return 'Say: ' + foo;
+  });
 
-get('/redirect-to-me', function(){
-  return "You were redirected";
-});
+  this.get('/redirects', function(){
+    this.redirectTo('/redirect-to-me');
+  });
 
-run(sinatra_app);
+  this.get('/redirect-to-me', function(){
+    return "You were redirected";
+  });
+  
+}));

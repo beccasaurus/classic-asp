@@ -4,6 +4,52 @@ req(uire('util/json2'));
 req(uire('util/makeClass'));
 req(uire('sinatra/haml'));
 
+// global Rails namespace
+var Rails = {};
+
+// Router.
+// Is initialized with an array that it persists 
+// the routes (Route objects) to.
+Rails.Router = makeClass();
+Rails.Router.prototype = {
+  init: function(routes){
+    this.routes = routes;
+  },
+  get: function(path, options){
+    // ... need to modularize the Sinatra router ... wanna use it here!
+  }
+}
+
+// Rails Application class
+Rails.Application = makeClass();
+Rails.Application.prototype = {
+
+  init: function(root_directory){
+    this.root = root_directory;
+    
+    // initialize configuration
+    
+    // initialize models
+    
+    // initialize controllers
+    this.controllers = [];
+
+    // initialize routes
+    req(uire(this.root + '/routes'));
+  },
+
+  // Rack #call function
+  call: function(env){
+    return [ 200, {}, ["You #call'd a Rails app"] ];
+  },
+
+  routes: function(block){
+    block.call(this, new Rails.Router(this.routes));
+  }
+
+};
+
+// will be re-writing this ...
 function controller(prototype){
   var klass = makeClass();
   klass.prototype = prototype;
@@ -11,9 +57,4 @@ function controller(prototype){
     return [200, {}, [text]];
   };
   return klass;
-}
-
-function rails_app(root_directory){
-  // need to load in all of the models & controllers from app/{models|controllers}/*.js
-  return function(){ return [200, {}, ["this will be a rails app"]] };
 }

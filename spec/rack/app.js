@@ -1,6 +1,6 @@
 req(uire('rack/rack'));
 
-function rack_app(env) {
+run(function(env){
   var method = env['REQUEST_METHOD'];
   var path   = env['PATH_INFO'];
 
@@ -21,6 +21,4 @@ function rack_app(env) {
     default:
       return [404, {}, ["Don't know what to return for " + method + ' ' + path]]
   }
-}
-
-run(rack_app);
+});

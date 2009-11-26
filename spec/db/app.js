@@ -1,4 +1,4 @@
-req(uire('sinatra/sinatra'));
+req(uire('sinatra/global'));
 req(uire('util/makeClass'));
 req(uire('util/db'));
 

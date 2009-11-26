@@ -2,7 +2,7 @@
 require File.dirname(__FILE__) + '/db/dog'
 
 def asp_server_ip
-  ENV['IP'] || '10.5.5.107'
+  ENV['IP'] || 'localhost'
 end
 
 def asp_server

@@ -65,7 +65,7 @@ var Rack = {
   },
 
   run: function(app){
-    var response = app(Rack.env());
+    var response = app.call(this, Rack.env());
     var status   = response[0];
     var headers  = response[1];
     var body     = response[2];

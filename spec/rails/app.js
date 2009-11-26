@@ -1,2 +1,2 @@
 req(uire('rails/rails'));
-run(rails_app('spec/rails'));
+run(new Rails.Application('spec/rails'));

@@ -1,0 +1,5 @@
+global(require('foo'))
+^ requ(uire('foo')) shortcut
+
+do the same with include?  to make it easy to 
+evaluate thing in the local scope or the global scope?
