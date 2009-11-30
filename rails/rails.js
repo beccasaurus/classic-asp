@@ -3,29 +3,37 @@ req(uire('util/io'));
 req(uire('util/json2'));
 req(uire('util/makeClass'));
 req(uire('sinatra/haml'));
+req(uire('sinatra/sinatra')); // we really just want the Sinatra.Router ...
 
 // global Rails namespace
 var Rails = {};
 
-// Router.
-// Is initialized with an array that it persists 
-// the routes (Route objects) to.
-Rails.Router = makeClass();
-Rails.Router.prototype = {
-  init: function(routes){
-    this.routes = routes;
+// Base controller class
+Rails.Controller = makeClass();
+Rails.Controller.prototype = {
+
+  init: function(name, actions){
+    this.name    = name;
+    this.actions = actions;
   },
-  get: function(path, options){
-    // ... need to modularize the Sinatra router ... wanna use it here!
+
+  render_text: function(text){ return [200, {}, [text]]; },
+
+  call_action: function(action){
+    var action = this.actions[action];
+    if (action != null)
+      return action.call(this);
   }
-}
+
+};
 
 // Rails Application class
 Rails.Application = makeClass();
 Rails.Application.prototype = {
 
   init: function(root_directory){
-    this.root = root_directory;
+    this.root   = root_directory;
+    this.router = new Sinatra.Router();
     
     // initialize configuration
     
@@ -33,28 +41,33 @@ Rails.Application.prototype = {
     
     // initialize controllers
     this.controllers = [];
+    req(uire(this.root + '/app/controllers/cats_controller')); // make this dynamic!
 
     // initialize routes
     req(uire(this.root + '/routes'));
   },
 
   // Rack #call function
-  call: function(env){
-    return [ 200, {}, ["You #call'd a Rails app"] ];
+  call: function(scope, env){
+    var path   = env['PATH_INFO']
+    var method = env['REQUEST_METHOD'];
+    var route  = this.router.match_route(path, method);
+    
+    if (route != null){
+
+      var controller = this.controllers[ route.data.controller.toLowerCase() ];
+      return controller.call_action(route.data.action);
+
+    } else
+      return [ 404, {}, ['Could not find route for ' + method + ' ' + path] ];
   },
 
   routes: function(block){
-    block.call(this, new Rails.Router(this.routes));
+    block.call(this, this.router);
+  },
+
+  controller: function(name, actions){
+    this.controllers[name.toLowerCase()] = new Rails.Controller(name, actions);
   }
 
 };
-
-// will be re-writing this ...
-function controller(prototype){
-  var klass = makeClass();
-  klass.prototype = prototype;
-  klass.prototype.render_text = function(text){
-    return [200, {}, [text]];
-  };
-  return klass;
-}

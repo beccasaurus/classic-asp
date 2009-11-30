@@ -1,5 +1,5 @@
 %w( rubygems spec httparty fileutils tempfile ).each {|lib| require lib }
-require File.dirname(__FILE__) + '/db/dog'
+# require File.dirname(__FILE__) + '/db/dog'
 
 def asp_server_ip
   ENV['IP'] || 'localhost'

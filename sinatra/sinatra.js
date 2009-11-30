@@ -17,10 +17,10 @@ var Sinatra = {};
 Sinatra.Route = makeClass();
 Sinatra.Route.prototype = {
 
-  init: function(path, method, block){
+  init: function(path, method, data){
     this.path   = path;
     this.method = method;
-    this.block  = block;
+    this.data   = data;
 
     // allow regular expressions (as paths)
     if (typeof(this.path['test']) == 'function'){
@@ -53,13 +53,12 @@ Sinatra.Route.prototype = {
   }
 };
 
-// class for individual Sinatra applications
-Sinatra.Application = makeClass();
-Sinatra.Application.prototype = {
+// class for managing multiple routes
+Sinatra.Router = makeClass();
+Sinatra.Router.prototype = {
 
-  init: function(block){
-    this.routes = [];
-    if (block != null) block.call(this);
+  init: function(){
+    this.routes = [];      
   },
 
   add_route: function(path, method, block){
@@ -79,16 +78,32 @@ Sinatra.Application.prototype = {
     for (var i in this.routes)
       if (this.routes[i].matches(path, method))
         return this.routes[i];
+  }
+
+};
+
+// class for individual Sinatra applications
+Sinatra.Application = makeClass();
+Sinatra.Application.prototype = {
+
+  init: function(block){
+    this.router = new Sinatra.Router();
+    if (block != null) block.call(this);
   },
+
+  get:     function(path, block){ this.router.get(    path, block); },
+  post:    function(path, block){ this.router.post(   path, block); },
+  put:     function(path, block){ this.router.put(    path, block); },
+  delete_: function(path, block){ this.router.delete_(path, block); },
 
   // Rack #call function
   call: function(scope, env){
     var path   = env['PATH_INFO']
     var method = env['REQUEST_METHOD'];
 
-    var route = this.match_route(path, method);
+    var route = this.router.match_route(path, method);
     if (route != null){
-      var block = route.block;
+      var block = route.data;
 
       var params = coll2hash(Request.Form());
       each(env.QUERY_STRINGS, function(key, value){
@@ -112,6 +127,8 @@ Sinatra.Application.prototype = {
           environment.headers['Location'] = 'http://' + env['SERVER_NAME'] + path;
         }
       };
+
+      // TODO move regexp matches and named params into the Router!
 
       // take any matches from the regular expression match 
       // and add them to params, as params.matches
