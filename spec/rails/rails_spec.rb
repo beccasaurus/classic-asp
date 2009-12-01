@@ -5,7 +5,7 @@ describe 'Rails' do
   before(:all){ setup :rails }
 
   it 'should be able to render text for an arbitrary controller action' do
-    get('/cats').should == 'Hello from CatsController index action'
+    get('/dogs').should == 'Hello from DogsController index action'
   end
 
   it 'should be able to render a template for an arbitrary controller action'

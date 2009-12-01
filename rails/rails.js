@@ -5,6 +5,23 @@ req(uire('util/makeClass'));
 req(uire('sinatra/haml'));
 req(uire('sinatra/sinatra')); // we really just want the Sinatra.Router ...
 
+// GLOBAL FUNCTIONS
+function render_view(view, variables){
+  //var text     = File.read(this.app.root + '/app/views/' + view + '.haml');
+  //var response = [200, {}, [ Haml.to_html(Haml.parse.call(variables, text)) ]];
+
+  var response = [200, {}, [ "hello, this: " + this ]];
+  if (arguments.callee.caller != null) // called from within function
+    return response;
+  else
+    return function(){ return response };
+}
+
+function params(key){
+  write('params');
+  return 1;
+}
+
 // global Rails namespace
 var Rails = {};
 
@@ -12,12 +29,15 @@ var Rails = {};
 Rails.Controller = makeClass();
 Rails.Controller.prototype = {
 
-  init: function(name, actions){
+  init: function(app, name, actions){
+    this.app     = app;
     this.name    = name;
     this.actions = actions;
   },
 
-  render_text: function(text){ return [200, {}, [text]]; },
+  render_text: function(text){
+    return [200, {}, [text]];
+  },
 
   call_action: function(action){
     var action = this.actions[action];
@@ -36,12 +56,14 @@ Rails.Application.prototype = {
     this.router = new Sinatra.Router();
     
     // initialize configuration
+    req(uire(this.root + '/config'));
     
     // initialize models
+    req(uire(this.root + '/app/models/dog')); // make this dynamic!
     
     // initialize controllers
     this.controllers = [];
-    req(uire(this.root + '/app/controllers/cats_controller')); // make this dynamic!
+    req(uire(this.root + '/app/controllers/dogs_controller')); // make this dynamic!
 
     // initialize routes
     req(uire(this.root + '/routes'));
@@ -67,7 +89,7 @@ Rails.Application.prototype = {
   },
 
   controller: function(name, actions){
-    this.controllers[name.toLowerCase()] = new Rails.Controller(name, actions);
+    this.controllers[name.toLowerCase()] = new Rails.Controller(this, name, actions);
   }
 
 };

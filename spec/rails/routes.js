@@ -1,7 +1,8 @@
 this.routes(function(map){
 
-  // map.resources('cats');
+  // map.resources('dogs');
 
-  map.get('/cats', { controller: 'cats', action: 'index' });
+  map.get('/dogs',     { controller: 'dogs', action: 'index' });
+  map.get('/dogs/:id', { controller: 'dogs', action: 'show'  });
 
 });
