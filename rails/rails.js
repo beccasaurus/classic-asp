@@ -5,23 +5,6 @@ req(uire('util/makeClass'));
 req(uire('sinatra/haml'));
 req(uire('sinatra/sinatra')); // we really just want the Sinatra.Router ...
 
-// GLOBAL FUNCTIONS
-function render_view(view, variables){
-  //var text     = File.read(this.app.root + '/app/views/' + view + '.haml');
-  //var response = [200, {}, [ Haml.to_html(Haml.parse.call(variables, text)) ]];
-
-  var response = [200, {}, [ "hello, this: " + this ]];
-  if (arguments.callee.caller != null) // called from within function
-    return response;
-  else
-    return function(){ return response };
-}
-
-function params(key){
-  write('params');
-  return 1;
-}
-
 // global Rails namespace
 var Rails = {};
 
@@ -39,7 +22,23 @@ Rails.Controller.prototype = {
     return [200, {}, [text]];
   },
 
-  call_action: function(action){
+  render_view: function(view, variables){
+    return this.app.render_view(view, variables, arguments);
+  },
+
+  params: function(key){
+    var params = coll2hash(Request.Form());
+    each(this.env.QUERY_STRINGS, function(key, value){
+      params[key] = value;
+    });
+    if (key != null)
+      return params[key];
+    else
+      return params;
+  },
+
+  call_action: function(action, env){
+    this.env = env;
     var action = this.actions[action];
     if (action != null)
       return action.call(this);
@@ -63,6 +62,9 @@ Rails.Application.prototype = {
     
     // initialize controllers
     this.controllers = [];
+
+    // hack ... set some variables here so they're available 'globally' to controllers
+    var render_view = function(view, vars){ return function(){ return this.render_view(view, vars); }; };
     req(uire(this.root + '/app/controllers/dogs_controller')); // make this dynamic!
 
     // initialize routes
@@ -78,7 +80,7 @@ Rails.Application.prototype = {
     if (route != null){
 
       var controller = this.controllers[ route.data.controller.toLowerCase() ];
-      return controller.call_action(route.data.action);
+      return controller.call_action(route.data.action, env);
 
     } else
       return [ 404, {}, ['Could not find route for ' + method + ' ' + path] ];
@@ -90,6 +92,18 @@ Rails.Application.prototype = {
 
   controller: function(name, actions){
     this.controllers[name.toLowerCase()] = new Rails.Controller(this, name, actions);
+  },
+
+  render_view: function(view, variables, args){
+    var text     = File.read(this.root + '/app/views/' + view + '.haml');
+    var response = [200, {}, [ Haml.to_html(Haml.parse.call(variables, text)) ]];
+
+    if (args == null) args = arguments;
+    if (args.callee.caller == null){ // called from within function
+      return function(){ return response };
+    } else {
+      return response;
+    }
   }
 
 };
