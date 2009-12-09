@@ -15,7 +15,7 @@ function js(filename){
     var file       = fso.OpenTextFile(path, 1); 
     var javascript = file.ReadAll();
     file.Close();
-    return javascript;
+    return javascript.replace(/do(\s)?{/g, 'function(){'); // replace 'do {' with 'function() {'
   } else {
     return null;
   }

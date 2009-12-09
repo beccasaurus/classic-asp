@@ -5,48 +5,48 @@ req(uire('util/db'));
 var db  = DB.odbc("dogs");
 var Dog = db.model("dogs");
 
-get('/', function(){
+get('/', do {
   return map(db.tables(), function(t){ return t.name; }).join(', ');
 });
 
-get('/dog-columns', function(){
+get('/dog-columns', do {
   return JSON.stringify(Dog.columns);
 });
 
-get('/all', function(){
+get('/all', do {
   return JSON.stringify(Dog.all());
 });
 
-get('/first', function(){
+get('/first', do {
   return JSON.stringify(Dog.first());
 });
 
-get('/count', function(){
+get('/count', do {
   return Dog.count();
 });
 
-get('/dogs/:name', function(){
+get('/dogs/:name', do {
   var dog = Dog.first({ name: this.params.name });
   return JSON.stringify(dog);
 });
 
-get('/dog/:id', function(){
+get('/dog/:id', do {
   var dog = Dog.get(this.params.id);
   return JSON.stringify(dog);
 });
 
-post('/dogs', function(){
+post('/dogs', do {
   Dog.create(this.params);
   return 'should have created dog ...';
 });
 
-post('/create-via-save', function(){
+post('/create-via-save', do {
   var rover = new Dog(this.params);
   rover.save();
   return 'should have created dog ...';
 });
 
-put('/update-dog/:old_name', function(){
+put('/update-dog/:old_name', do {
   var dog = Dog.first({ name: this.params.old_name });
   dog.update_attributes(this.params);
   dog.save();
