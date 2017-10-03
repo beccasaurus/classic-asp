@@ -25,15 +25,19 @@ to the index.asp file.
 
 Create an app.js file.  This is your actual application, eg.
 
-    Response.Write("Hello World!");
+```js
+Response.Write("Hello World!");
+```
 
 If you download `rack.js` and put it in your website directory, then you can write:
 
-    req(uire('rack'));
+```js
+req(uire('rack'));
 
-    run(do {
-      return [200, {}, ["Hello from Rack!"]];
-    });
+run(do {
+  return [200, {}, ["Hello from Rack!"]];
+});
+```
   
 `rack.js` actually also has some dependencies so you're safer downloading the whole 
 repository (the `rack` and `util` directories, at the very least).
